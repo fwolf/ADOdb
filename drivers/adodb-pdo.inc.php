@@ -143,7 +143,8 @@ class ADODB_pdo extends ADOConnection {
 				case 'mysql':
 				case 'oci':
 				case 'pgsql':
-				case 'sqlite':
+                case 'sqlite':
+                case 'sybase_ase':
 				default:
 					$argDSN .= ';dbname='.$argDatabasename;
 			}
@@ -193,7 +194,8 @@ class ADODB_pdo extends ADOConnection {
 				case 'oci':
 				case 'pgsql':
 				case 'sqlite':
-				case 'sqlsrv':
+                case 'sqlsrv':
+                case 'sybase_ase':
 					include_once(ADODB_DIR.'/drivers/adodb-pdo_'.$this->dsnType.'.inc.php');
 					break;
 			}

@@ -4835,6 +4835,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
             case 'pdo_pgsql':
             case 'pdo_sqlite':
             case 'pdo_sqlsrv':
+            case 'pdo_sybase_ase':
                 $class = $db = 'pdo';
                 break;
 
