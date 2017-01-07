@@ -145,6 +145,47 @@ class ADODB_pdo_sybase_ase extends ADODB_pdo
 
 
     /**
+     * Added 2003-10-07 by Chris Phillipson
+     * Used ASA SQL Reference Manual to convert similar Microsoft SQL*Server
+     * (mssql) API into Sybase compatible version
+     * @see http://sybooks.sybase.com/onlinebooks/group-aw/awg0800e/dbrfen8/@ebt-link;pt=5981;uf=0?target=0;window=new;showtoc=true;book=dbrfen8
+     *
+     * @param   string $table
+     * @param   bool   $owner
+     * @return  bool|array
+     */
+    function MetaPrimaryKeys($table, $owner = false)
+    {
+        $rs = $this->execute("
+            SELECT
+                keycnt AS name,
+                index_col('$table', indid, 1) AS k1,
+                index_col('$table', indid, 2) AS k2,
+                index_col('$table', indid, 3) AS k3
+            FROM sysindexes
+            WHERE
+                status & 2048 = 2048 AND
+                id = object_id('$table')
+        ");
+        if (!empty($rs) && (0 < $rs->RowCount())) {
+            // Got
+            $ar = [$rs->fields['k1']];
+            if (!empty($rs->fields['k2'])) {
+                $ar[] = $rs->fields['k2'];
+            }
+            if (!empty($rs->fields['k3'])) {
+                $ar[] = $rs->fields['k3'];
+            }
+        } else {
+            // Table have no primary key
+            $ar = false;
+        }
+
+        return $ar;
+    }
+
+
+    /**
      * Fix a bug which prevent the metaColumns query to be executed for Sybase
      * ASE
      *

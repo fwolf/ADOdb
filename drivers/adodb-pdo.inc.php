@@ -263,7 +263,25 @@ class ADODB_pdo extends ADOConnection {
 		return $this->_driver->MetaColumns($table,$normalize);
 	}
 
-	function InParameter(&$stmt,&$var,$name,$maxLen=4000,$type=false)
+
+    /**
+     * Returns an array with the primary key columns in it
+     *
+     * @param   string $table
+     * @param   bool   $owner
+     * @return  array|bool
+     */
+    function MetaPrimaryKeys($table, $owner=false)
+    {
+        if (method_exists($this->_driver, 'MetaPrimaryKeys')) {
+            return $this->_driver->MetaPrimaryKeys($table, $owner);
+        }
+
+        return parent::MetaPrimaryKeys($table, $owner);
+    }
+
+
+    function InParameter(&$stmt,&$var,$name,$maxLen=4000,$type=false)
 	{
 		$obj = $stmt[1];
 		if ($type) {
