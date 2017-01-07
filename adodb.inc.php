@@ -4878,6 +4878,12 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 	function ADONewConnection($db='') {
 		global $ADODB_NEWCONNECTION, $ADODB_LASTDB;
 
+		// Need to know which DBMS we are deal with
+		$dbType = $db;
+		if ('pdo_' == substr($dbType, 0, 4)) {
+		    $dbType = substr($dbType, 4);
+        }
+
 		if (!defined('ADODB_ASSOC_CASE')) {
 			define('ADODB_ASSOC_CASE', ADODB_ASSOC_CASE_NATIVE);
 		}
@@ -4994,6 +5000,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			}
 
 			$obj = new $cls();
+			$obj->databaseType = $dbType;
 		}
 
 		# constructor should not fail

@@ -131,6 +131,9 @@ class ADODB_pdo extends ADOConnection {
 		$at = strpos($argDSN,':');
 		$this->dsnType = substr($argDSN,0,$at);
 
+		// This is correct db type, above is just PDO driver name
+		$this->dsnType = $this->databaseType;
+
 		if ($argDatabasename) {
 			switch($this->dsnType){
 				case 'sqlsrv':

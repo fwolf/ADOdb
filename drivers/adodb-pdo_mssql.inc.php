@@ -12,7 +12,12 @@
 
 */
 
-class ADODB_pdo_mssql extends ADODB_pdo {
+class ADODB_pdo_mssql extends ADODB_pdo
+{
+    /**
+     * @var string
+     */
+    public $databaseType = 'mssql';
 
 	var $hasTop = 'top';
 	var $sysDate = 'convert(datetime,convert(char,GetDate(),102),102)';
@@ -59,4 +64,13 @@ class ADODB_pdo_mssql extends ADODB_pdo {
 		return false;
 	}
 
+}
+
+
+class ADORecordSet_pdo_mssql extends ADORecordSet_pdo
+{
+    /**
+     * @var string
+     */
+    public $databaseType = "mssql";
 }
