@@ -156,16 +156,20 @@ class ADODB_pdo_sybase_ase extends ADODB_pdo
      */
     function MetaPrimaryKeys($table, $owner = false)
     {
+        // PDO driver does not support OBJECT_ID() ?
         $rs = $this->execute("
             SELECT
-                keycnt AS name,
+                a.keycnt AS name,
                 index_col('$table', indid, 1) AS k1,
                 index_col('$table', indid, 2) AS k2,
                 index_col('$table', indid, 3) AS k3
-            FROM sysindexes
+            FROM
+                sysindexes a,
+                sysobjects b
             WHERE
-                status & 2048 = 2048 AND
-                id = object_id('$table')
+                a.status & 2048 = 2048 AND
+                b.name = '$table' AND
+                a.id = b.id
         ");
         if (!empty($rs) && (0 < $rs->RowCount())) {
             // Got
