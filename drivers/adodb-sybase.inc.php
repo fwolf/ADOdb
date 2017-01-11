@@ -165,10 +165,13 @@ class ADODB_sybase extends ADOConnection {
 	{
 	global $ADODB_COUNTRECS;
 
-		if ($ADODB_COUNTRECS == false && ADODB_PHPVER >= 0x4300)
-			return sybase_unbuffered_query($sql,$this->_connectionID);
-		else
-			return sybase_query($sql,$this->_connectionID);
+        if ($ADODB_COUNTRECS == false &&
+            function_exists('sybase_unbuffered_query')
+        ) {
+            return sybase_unbuffered_query($sql,$this->_connectionID);
+        } else {
+            return sybase_query($sql, $this->_connectionID);
+        }
 	}
 
 	// See http://www.isug.com/Sybase_FAQ/ASE/section6.2.html#6.2.12
