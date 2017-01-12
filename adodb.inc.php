@@ -1175,9 +1175,12 @@ if (!defined('_ADODB_LAYER')) {
 				}
 				// Make sure the number of parameters provided in the input
 				// array matches what the query expects
-                // The input array format seems changed ?
-                $inputarr = array_shift($inputarr);
+                // The input array format seems changed ? Try twice
 				$element0 = reset($inputarr);
+                if ($nparams != count($element0)) {
+                    $inputarr = array_shift($inputarr);
+                    $element0 = reset($inputarr);
+                }
 				if ($nparams != count($element0)) {
 					$this->outp_throw(
 						"Input array has " . count($element0) .
