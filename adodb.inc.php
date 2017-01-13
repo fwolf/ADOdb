@@ -1175,11 +1175,19 @@ if (!defined('_ADODB_LAYER')) {
 				}
 				// Make sure the number of parameters provided in the input
 				// array matches what the query expects
-                // The input array format seems changed ? Try twice
-				$element0 = reset($inputarr);
-                if ($nparams != count($element0)) {
-                    $inputarr = array_shift($inputarr);
+                //
+                // Sometimes there are too much [[[]]], loop to remove them
+                // inputarr may have multi children, its rows
+                // element0 may have multi columns, its single row
+                // but element1 must not be array, its plain data(column)
+                $element0 = reset($inputarr);
+                $keys0 = array_keys($element0);
+                $element1 = $element0[$keys0[0]];
+                while (is_array($element1) && 1 == count($inputarr)) {
+                    $inputarr = $element0;
                     $element0 = reset($inputarr);
+                    $keys0 = array_keys($element0);
+                    $element1 = $element0[$keys0[0]];
                 }
 				if ($nparams != count($element0)) {
 					$this->outp_throw(
