@@ -148,6 +148,7 @@ class ADODB_pdo_sybase_ase extends ADODB_pdo
      * Added 2003-10-07 by Chris Phillipson
      * Used ASA SQL Reference Manual to convert similar Microsoft SQL*Server
      * (mssql) API into Sybase compatible version
+     *
      * @see http://sybooks.sybase.com/onlinebooks/group-aw/awg0800e/dbrfen8/@ebt-link;pt=5981;uf=0?target=0;window=new;showtoc=true;book=dbrfen8
      *
      * @param   string $table
@@ -242,6 +243,42 @@ class ADODB_pdo_sybase_ase extends ADODB_pdo
         $this->Execute('ROLLBACK TRAN');
 
         return true;
+    }
+
+
+    public function SelectLimit(
+        $sql,
+        $nrows = -1,
+        $offset = -1,
+        $inputarr = false,
+        $secs2cache = 0
+    ) {
+        // we do not cache rowcount, so we have to load entire recordset
+        if ($secs2cache > 0) {
+            $rs = ADOConnection::SelectLimit(
+                $sql,
+                $nrows,
+                $offset,
+                $inputarr,
+                $secs2cache
+            );
+
+            return $rs;
+        }
+
+        $nrows = (integer)$nrows;
+        $offset = (integer)$offset;
+
+        $cnt = ($nrows >= 0) ? $nrows : 999999999;
+        if ($offset > 0 && $cnt) {
+            $cnt += $offset;
+        }
+
+        $this->Execute("set rowcount $cnt");
+        $rs = ADOConnection::SelectLimit($sql, $nrows, $offset, $inputarr, 0);
+        $this->Execute("set rowcount 0");
+
+        return $rs;
     }
 
 
