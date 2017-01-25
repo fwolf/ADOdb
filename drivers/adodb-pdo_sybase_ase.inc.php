@@ -11,13 +11,17 @@ class ADODB_pdo_sybase_ase extends ADODB_pdo
     public $databaseType = 'sybase_ase';
 
     /**
+     * Note: precision is reserve word.
+     *
      * @var string
      */
     public $metaColumnsSQL = "
         SELECT
             syscolumns.name AS field_name,
             systypes.name AS type,
-            systypes.length AS width
+            systypes.length AS width,
+            syscolumns.prec AS prec,
+            syscolumns.scale AS scale
         FROM sysobjects, syscolumns, systypes
         WHERE
             sysobjects.name='%s' AND
@@ -110,6 +114,8 @@ class ADODB_pdo_sybase_ase extends ADODB_pdo
                 $fld->name = $rs->Fields('field_name');
                 $fld->type = $rs->Fields('type');
                 $fld->max_length = $rs->Fields('width');
+                $fld->precision = $rs->Fields('prec');
+                $fld->scale = $rs->Fields('scale');
                 $retarr[strtoupper($fld->name)] = $fld;
                 $rs->MoveNext();
             }
